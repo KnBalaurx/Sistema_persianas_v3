@@ -18,12 +18,12 @@
         android:id="@+id/btnAbrir"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Abrir Persiana"/>
+        android:text="Subir" />
 
     <Button
         android:id="@+id/btnCerrar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cerrar Persiana"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:text="Bajar" />
 </LinearLayout>

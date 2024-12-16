@@ -1,6 +1,7 @@
 package com.example.sistemapersianasv3;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvSensorValue;
     private Button btnAbrir, btnCerrar;
     private OkHttpClient client;
+    private Handler handler;
+    private static final int REFRESH_INTERVAL = 15000; // 15 segundos en milisegundos
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +33,14 @@ public class MainActivity extends AppCompatActivity {
         btnAbrir = findViewById(R.id.btnAbrir);
         btnCerrar = findViewById(R.id.btnCerrar);
         client = new OkHttpClient();
+        handler = new Handler();
 
         // Botones para enviar comandos
         btnAbrir.setOnClickListener(v -> enviarComando(1)); // Abrir persiana
         btnCerrar.setOnClickListener(v -> enviarComando(2)); // Cerrar persiana
 
-        // Actualizar el valor del sensor periódicamente
-        actualizarSensor();
+        // Iniciar la actualización periódica del sensor
+        iniciarActualizacionSensor();
     }
 
     private void enviarComando(int comando) {
@@ -79,4 +83,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void iniciarActualizacionSensor() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                actualizarSensor();
+                handler.postDelayed(this, REFRESH_INTERVAL); // Vuelve a programar después de 15 segundos
+            }
+        }, REFRESH_INTERVAL);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null); // Detener actualizaciones si la actividad se destruye
+        }
+    }
 }
+
